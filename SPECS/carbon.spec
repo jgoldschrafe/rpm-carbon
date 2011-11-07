@@ -1,7 +1,7 @@
 Summary:    Backend data caching and persistence daemon for Graphite
 Name:       carbon
 Version:    0.9.9
-Release:    3%{?dist}
+Release:    4%{?dist}
 Source0:    %{name}-%{version}.tar.gz
 Source1:    carbon-cache.init
 Source2:    carbon-relay.init
@@ -32,7 +32,9 @@ UNKNOWN
 
 install -d -m 0755 %{buildroot}%{_sysconfdir}
 install -d -m 0755 %{buildroot}%{_initrddir}
+install -d -m 0755 %{buildroot}%{_localstatedir}/log/graphite/carbon-aggregator
 install -d -m 0755 %{buildroot}%{_localstatedir}/log/graphite/carbon-cache
+install -d -m 0755 %{buildroot}%{_localstatedir}/log/graphite/carbon-relay
 install -d -m 0755 %{buildroot}%{_localstatedir}/run/graphite
 
 mv %{buildroot}%{_prefix}/conf %{buildroot}%{_sysconfdir}/graphite
@@ -92,7 +94,9 @@ fi
 %{python_sitelib}/%{name}/aggregator/*.pyc
 %{python_sitelib}/%{name}/aggregator/*.pyo
 %attr(0755,graphite,graphite) %{_localstatedir}/log/graphite
+%attr(0755,graphite,graphite) %{_localstatedir}/log/graphite/carbon-aggregator
 %attr(0755,graphite,graphite) %{_localstatedir}/log/graphite/carbon-cache
+%attr(0755,graphite,graphite) %{_localstatedir}/log/graphite/carbon-relay
 %attr(0755,graphite,graphite) %{_localstatedir}/run/graphite
 
 # This is questionable and should probably be split into another package
@@ -107,6 +111,10 @@ fi
 %{python_sitelib}/twisted/plugins/carbon_relay_plugin.pyo
 
 %changelog
+* Mon Nov  7 2011 Jeff Goldschrafe <jeff@holyhandgrenade.org> - 0.9.9-4
+- Make init scripts run daemons as graphite user
+- Fix logging options in init script
+
 * Sun Nov  6 2011 Jeff Goldschrafe <jeff@holyhandgrenade.org> - 0.9.9-3
 - Rename python-carbon to carbon
 

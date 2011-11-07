@@ -23,6 +23,7 @@ prog=$(basename "$exec")
 CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
 CARBON_RELAY_ARGS=""
 CARBON_RELAY_PIDFILE="/var/run/graphite/carbon-relay.pid"
+CARBON_RELAY_USER="graphite"
 
 if [ -f /etc/sysconfig/carbon-relay ]; then
     . /etc/sysconfig/carbon-relay
@@ -39,8 +40,9 @@ rh_status() {
 
 start() {
     echo -n 'Starting carbon-relay...'
-    daemon --pidfile="$CARBON_RELAY_PIDFILE" "$exec" start $args \
-      --config="$CARBON_CONFIG_PATH" --pidfile="$CARBON_RELAY_PIDFILE" >/dev/null
+    daemon --pidfile="$CARBON_RELAY_PIDFILE" --user="$CARBON_RELAY_USER" \
+           "$exec" start $args --config="$CARBON_CONFIG_PATH" \
+           --pidfile="$CARBON_RELAY_PIDFILE" --logdir="$CARBON_RELAY_LOGDIR"
     retval=$?
     echo
     return $retval

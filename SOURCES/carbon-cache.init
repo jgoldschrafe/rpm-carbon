@@ -22,7 +22,9 @@ exec="/usr/bin/carbon-cache.py"
 prog=$(basename "$exec")
 CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
 CARBON_CACHE_ARGS=""
+CARBON_CACHE_LOGDIR="/var/log/graphite/carbon-cache"
 CARBON_CACHE_PIDFILE="/var/run/graphite/carbon-cache.pid"
+CARBON_CACHE_USER="graphite"
 
 if [ -f /etc/sysconfig/carbon-cache ]; then
     . /etc/sysconfig/carbon-cache
@@ -39,8 +41,9 @@ rh_status() {
 
 start() {
     echo -n 'Starting carbon-cache...'
-    daemon --pidfile="$CARBON_CACHE_PIDFILE" "$exec" start $args \
-      --config="$CARBON_CONFIG_PATH" --pidfile="$CARBON_CACHE_PIDFILE" >/dev/null
+    daemon --pidfile="$CARBON_CACHE_PIDFILE" --user="$CARBON_CACHE_USER" \
+            "$exec" start $args --config="$CARBON_CONFIG_PATH" \
+            --pidfile="$CARBON_CACHE_PIDFILE" --logdir="$CARBON_CACHE_LOGDIR"
     retval=$?
     echo
     return $retval

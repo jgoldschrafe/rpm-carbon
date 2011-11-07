@@ -23,6 +23,7 @@ prog=$(basename "$exec")
 CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
 CARBON_AGGREGATOR_ARGS=""
 CARBON_AGGREGATOR_PIDFILE="/var/run/graphite/carbon-aggregator.pid"
+CARBON_AGGREGATOR_USER="graphite"
 
 if [ -f /etc/sysconfig/carbon-aggregator ]; then
     . /etc/sysconfig/carbon-aggregator
@@ -39,8 +40,10 @@ rh_status() {
 
 start() {
     echo -n 'Starting carbon-aggregator...'
-    daemon --pidfile="$CARBON_AGGREGATOR_PIDFILE" "$exec" start $args \
-      --config="$CARBON_CONFIG_PATH" --pidfile="$CARBON_AGGREGATOR_PIDFILE" >/dev/null
+    daemon --pidfile="$CARBON_AGGREGATOR_PIDFILE" --user="$CARBON_AGGREGATOR_USER" \
+           "$exec" start $args --config="$CARBON_CONFIG_PATH" \
+           --pidfile="$CARBON_AGGREGATOR_PIDFILE" \
+           --logdir="$CARBON_AGGREGATOR_LOGDIR"
     retval=$?
     echo
     return $retval

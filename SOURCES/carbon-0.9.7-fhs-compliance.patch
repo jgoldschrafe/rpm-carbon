@@ -1,0 +1,63 @@
+diff -ru carbon-0.9.7-upstream/bin/carbon-cache.py carbon-0.9.7/bin/carbon-cache.py
+--- carbon-0.9.7-upstream/bin/carbon-cache.py	2011-10-26 08:42:08.383714516 -0400
++++ carbon-0.9.7/bin/carbon-cache.py	2011-10-26 08:43:53.371572577 -0400
+@@ -38,10 +38,10 @@
+ # Figure out where we're installed
+ BIN_DIR = dirname( os.path.abspath(__file__) )
+ ROOT_DIR = dirname(BIN_DIR)
+-STORAGE_DIR = join(ROOT_DIR, 'storage')
+-LOG_DIR = join(STORAGE_DIR, 'log', 'carbon-cache')
++STORAGE_DIR = join('/var/lib/graphite')
++LOG_DIR = join('/var/log/graphite/carbon-cache')
+ LIB_DIR = join(ROOT_DIR, 'lib')
+-CONF_DIR = join(ROOT_DIR, 'conf')
++CONF_DIR = join('/etc/graphite')
+ __builtins__.CONF_DIR = CONF_DIR # evil I know, but effective.
+ 
+ sys.path.insert(0, LIB_DIR)
+diff -ru carbon-0.9.7-upstream/bin/carbon-relay.py carbon-0.9.7/bin/carbon-relay.py
+--- carbon-0.9.7-upstream/bin/carbon-relay.py	2011-10-26 08:42:08.383714516 -0400
++++ carbon-0.9.7/bin/carbon-relay.py	2011-10-26 08:44:42.040674649 -0400
+@@ -34,10 +34,10 @@
+ # Figure out where we're installed
+ BIN_DIR = dirname(__file__)
+ ROOT_DIR = dirname(BIN_DIR)
+-STORAGE_DIR = join(ROOT_DIR, 'storage')
+-LOG_DIR = join(STORAGE_DIR, 'log', 'carbon-relay')
++STORAGE_DIR = '/var/lib/graphite/storage'
++LOG_DIR = '/var/log/graphite/carbon-relay'
+ LIB_DIR = join(ROOT_DIR, 'lib')
+-CONF_DIR = join(ROOT_DIR, 'conf')
++CONF_DIR = '/etc/graphite'
+ __builtins__.CONF_DIR = CONF_DIR
+ 
+ sys.path.insert(0, LIB_DIR)
+diff -ru carbon-0.9.7-upstream/conf/carbon.conf.example carbon-0.9.7/conf/carbon.conf.example
+--- carbon-0.9.7-upstream/conf/carbon.conf.example	2011-10-26 08:42:08.384718077 -0400
++++ carbon-0.9.7/conf/carbon.conf.example	2011-10-26 18:36:34.973660754 -0400
+@@ -1,5 +1,5 @@
+ [cache]
+-LOCAL_DATA_DIR = /opt/graphite/storage/whisper/
++LOCAL_DATA_DIR = /var/lib/graphite/storage/whisper
+ 
+ # Specify the user to drop privileges to
+ # If this is blank carbon runs as the user that invokes it
+diff -ru carbon-0.9.7-upstream/lib/carbon/conf.py carbon-0.9.7/lib/carbon/conf.py
+--- carbon-0.9.7-upstream/lib/carbon/conf.py	2011-10-26 08:42:08.382731182 -0400
++++ carbon-0.9.7/lib/carbon/conf.py	2011-10-26 08:45:12.667505551 -0400
+@@ -16,7 +16,7 @@
+ 
+ 
+ defaults = dict(
+-  LOCAL_DATA_DIR="/opt/graphite/storage/whisper/",
++  LOCAL_DATA_DIR="/var/lib/graphite/storage/whisper",
+   USER="",
+   MAX_CACHE_SIZE='inf',
+   MAX_UPDATES_PER_SECOND=1000,
+diff -ru carbon-0.9.7-upstream/setup.cfg carbon-0.9.7/setup.cfg
+--- carbon-0.9.7-upstream/setup.cfg	2011-10-26 08:42:08.384718077 -0400
++++ carbon-0.9.7/setup.cfg	2011-10-26 09:05:13.678679614 -0400
+@@ -1,3 +1 @@
+ [install]
+-prefix = /opt/graphite
+-install-lib = %(prefix)s/lib

@@ -1,0 +1,81 @@
+#!/bin/bash
+#!/bin/bash
+#
+# uwsgi - This script starts and stops all configured uwsgi applications
+#
+# chkconfig:   - 85 15
+# description: uWSGI is a program to run applications adhering to the
+#              Web Server Gateway Interface.
+# processname: uwsgi
+# config:      /etc/sysconfig/uwsgi
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+exec="/usr/bin/carbon-cache.py"
+prog=$(basename "$exec")
+CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
+CARBON_CACHE_ARGS=""
+CARBON_CACHE_PIDFILE="/var/run/graphite/carbon-cache.pid"
+
+if [ -f /etc/sysconfig/carbon-cache ]; then
+    . /etc/sysconfig/carbon-cache
+fi
+
+restart() {
+    stop
+    start
+}
+
+rh_status() {
+    status -p "$CARBON_CACHE_PIDFILE" "$prog"
+}
+
+start() {
+    echo -n 'Starting carbon-cache...'
+    daemon --pidfile="$CARBON_CACHE_PIDFILE" "$exec" start $args \
+      --config="$CARBON_CONFIG_PATH" --pidfile="$CARBON_CACHE_PIDFILE" >/dev/null
+    retval=$?
+    echo
+    return $retval
+}
+
+stop() {
+    echo -n 'Stopping carbon-cache...'
+    killproc -p "$CARBON_CACHE_PIDFILE" "$prog"
+    retval=$?
+    echo
+    return $retval
+}
+
+case $1 in
+    condrestart|try-restart)
+        rh_status "$f" 2>/dev/null && restart "$f"
+        ;;
+    reload)
+        restart
+        ;;
+    restart)
+        restart
+        ;;
+    start)
+        start
+        ;;
+    status)
+        rh_status
+        ;;
+    status_q)
+        rh_status >/dev/null 2>&1
+        ;;
+    stop)
+        stop
+        ;;
+esac
+
+exit $?

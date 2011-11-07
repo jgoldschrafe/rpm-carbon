@@ -58,7 +58,7 @@ case $1 in
     condrestart|try-restart)
         rh_status "$f" 2>/dev/null && restart "$f"
         ;;
-    reload)
+    reload|force-reload)
         restart
         ;;
     restart)
@@ -75,6 +75,10 @@ case $1 in
         ;;
     stop)
         stop
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+        exit 2
         ;;
 esac
 

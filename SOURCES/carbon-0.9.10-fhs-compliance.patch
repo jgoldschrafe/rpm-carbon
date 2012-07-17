@@ -1,0 +1,93 @@
+diff -ru carbon-0.9.10/bin/carbon-aggregator.py carbon-0.9.10-new/bin/carbon-aggregator.py
+--- carbon-0.9.10/bin/carbon-aggregator.py	2012-05-08 00:25:19.000000000 -0400
++++ carbon-0.9.10-new/bin/carbon-aggregator.py	2012-07-10 08:40:54.257441533 -0400
+@@ -18,12 +18,6 @@
+ 
+ # Figure out where we're installed
+ BIN_DIR = dirname(abspath(__file__))
+-ROOT_DIR = dirname(BIN_DIR)
+-
+-# Make sure that carbon's 'lib' dir is in the $PYTHONPATH if we're running from
+-# source.
+-LIB_DIR = join(ROOT_DIR, 'lib')
+-sys.path.insert(0, LIB_DIR)
+ 
+ from carbon.util import run_twistd_plugin
+ 
+diff -ru carbon-0.9.10/bin/carbon-cache.py carbon-0.9.10-new/bin/carbon-cache.py
+--- carbon-0.9.10/bin/carbon-cache.py	2012-05-08 00:25:19.000000000 -0400
++++ carbon-0.9.10-new/bin/carbon-cache.py	2012-07-10 08:40:54.258442888 -0400
+@@ -18,12 +18,6 @@
+ 
+ # Figure out where we're installed
+ BIN_DIR = dirname(abspath(__file__))
+-ROOT_DIR = dirname(BIN_DIR)
+-
+-# Make sure that carbon's 'lib' dir is in the $PYTHONPATH if we're running from
+-# source.
+-LIB_DIR = join(ROOT_DIR, 'lib')
+-sys.path.insert(0, LIB_DIR)
+ 
+ from carbon.util import run_twistd_plugin
+ 
+diff -ru carbon-0.9.10/bin/carbon-client.py carbon-0.9.10-new/bin/carbon-client.py
+--- carbon-0.9.10/bin/carbon-client.py	2012-05-08 00:25:19.000000000 -0400
++++ carbon-0.9.10-new/bin/carbon-client.py	2012-07-10 08:40:54.258442888 -0400
+@@ -20,15 +20,9 @@
+ 
+ # Figure out where we're installed
+ BIN_DIR = dirname(abspath(__file__))
+-ROOT_DIR = dirname(BIN_DIR)
+-CONF_DIR = join(ROOT_DIR, 'conf')
++CONF_DIR = '/etc/graphite'
+ default_relayrules = join(CONF_DIR, 'relay-rules.conf')
+ 
+-# Make sure that carbon's 'lib' dir is in the $PYTHONPATH if we're running from
+-# source.
+-LIB_DIR = join(ROOT_DIR, 'lib')
+-sys.path.insert(0, LIB_DIR)
+-
+ try:
+   from twisted.internet import epollreactor
+   epollreactor.install()
+diff -ru carbon-0.9.10/bin/carbon-relay.py carbon-0.9.10-new/bin/carbon-relay.py
+--- carbon-0.9.10/bin/carbon-relay.py	2012-05-08 00:25:19.000000000 -0400
++++ carbon-0.9.10-new/bin/carbon-relay.py	2012-07-10 08:40:54.258442888 -0400
+@@ -18,12 +18,6 @@
+ 
+ # Figure out where we're installed
+ BIN_DIR = dirname(abspath(__file__))
+-ROOT_DIR = dirname(BIN_DIR)
+-
+-# Make sure that carbon's 'lib' dir is in the $PYTHONPATH if we're running from
+-# source.
+-LIB_DIR = join(ROOT_DIR, 'lib')
+-sys.path.insert(0, LIB_DIR)
+ 
+ from carbon.util import run_twistd_plugin
+ 
+diff -ru carbon-0.9.10/bin/validate-storage-schemas.py carbon-0.9.10-new/bin/validate-storage-schemas.py
+--- carbon-0.9.10/bin/validate-storage-schemas.py	2012-05-08 00:25:19.000000000 -0400
++++ carbon-0.9.10-new/bin/validate-storage-schemas.py	2012-07-10 08:43:58.676339454 -0400
+@@ -22,7 +22,7 @@
+   SCHEMAS_FILE = sys.argv[1]
+   print "Loading storage-schemas configuration from: '%s'" % SCHEMAS_FILE
+ else:
+-  SCHEMAS_FILE = realpath(join(dirname(__file__), '..', 'conf', 'storage-schemas.conf'))
++  SCHEMAS_FILE = join('%SYSCONFDIR%', 'graphite', 'storage-schemas.conf')
+   print "Loading storage-schemas configuration from default location at: '%s'" % SCHEMAS_FILE
+ 
+ config_parser = ConfigParser()
+Only in carbon-0.9.10-new/bin: validate-storage-schemas.py.orig
+Only in carbon-0.9.10-new/bin: validate-storage-schemas.py.rej
+diff -ru carbon-0.9.10/setup.cfg carbon-0.9.10-new/setup.cfg
+--- carbon-0.9.10/setup.cfg	2012-05-29 02:37:53.000000000 -0400
++++ carbon-0.9.10-new/setup.cfg	2012-07-10 08:41:46.175587704 -0400
+@@ -1,7 +1,3 @@
+-[install]
+-prefix = /opt/graphite
+-install-lib = %(prefix)s/lib
+-
+ [bdist_rpm]
+ requires = python-twisted
+            whisper

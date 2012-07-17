@@ -1,13 +1,12 @@
 #!/bin/bash
-#!/bin/bash
 #
-# uwsgi - This script starts and stops all configured uwsgi applications
+# carbon-cache - This script starts and stops the carbon-cache service.
 #
 # chkconfig:   - 85 15
-# description: uWSGI is a program to run applications adhering to the
-#              Web Server Gateway Interface.
-# processname: uwsgi
-# config:      /etc/sysconfig/uwsgi
+# description: carbon-cache accepts graphite metrics and writes them to
+#              disk using whisper
+# processname: carbon-cache.py
+# config:      /etc/sysconfig/carbon-cache
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -20,13 +19,16 @@
 
 exec="/usr/bin/carbon-cache.py"
 prog=$(basename "$exec")
-CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
+CARBON_CONFIG_PATH="/etc/carbon/carbon.conf"
 CARBON_CACHE_ARGS=""
-CARBON_CACHE_PIDFILE="/var/run/graphite/carbon-cache.pid"
+CARBON_CACHE_PIDFILE="/var/run/carbon/carbon-cache.pid"
+GRAPHITE_STORAGE_DIR="/var/lib/carbon"
 
 if [ -f /etc/sysconfig/carbon-cache ]; then
     . /etc/sysconfig/carbon-cache
 fi
+
+export GRAPHITE_STORAGE_DIR
 
 restart() {
     stop
@@ -56,7 +58,7 @@ stop() {
 
 case $1 in
     condrestart|try-restart)
-        rh_status "$f" 2>/dev/null && restart "$f"
+        rh_status 2>/dev/null && restart
         ;;
     reload|force-reload)
         restart

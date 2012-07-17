@@ -1,13 +1,12 @@
 #!/bin/bash
-#!/bin/bash
 #
-# uwsgi - This script starts and stops all configured uwsgi applications
+# carbon-relay - This script starts and stops the carbon-relay service.
 #
 # chkconfig:   - 85 15
-# description: uWSGI is a program to run applications adhering to the
-#              Web Server Gateway Interface.
-# processname: uwsgi
-# config:      /etc/sysconfig/uwsgi
+# description: carbon-relay provides replication and/or sharding services
+#              for carbon-cache
+# processname: carbon-relay.py
+# config:      /etc/sysconfig/carbon-relay#!/bin/bash
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -20,9 +19,9 @@
 
 exec="/usr/bin/carbon-relay.py"
 prog=$(basename "$exec")
-CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
+CARBON_CONFIG_PATH="/etc/carbon/carbon.conf"
 CARBON_RELAY_ARGS=""
-CARBON_RELAY_PIDFILE="/var/run/graphite/carbon-relay.pid"
+CARBON_RELAY_PIDFILE="/var/run/carbon/carbon-relay.pid"
 
 if [ -f /etc/sysconfig/carbon-relay ]; then
     . /etc/sysconfig/carbon-relay
@@ -56,7 +55,7 @@ stop() {
 
 case $1 in
     condrestart|try-restart)
-        rh_status "$f" 2>/dev/null && restart "$f"
+        rh_status 2>/dev/null && restart
         ;;
     reload|force-reload)
         restart

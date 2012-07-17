@@ -1,13 +1,12 @@
 #!/bin/bash
-#!/bin/bash
 #
-# uwsgi - This script starts and stops all configured uwsgi applications
+# carbon-aggregator - This script starts and stops the carbon-aggregator service.
 #
 # chkconfig:   - 85 15
-# description: uWSGI is a program to run applications adhering to the
-#              Web Server Gateway Interface.
-# processname: uwsgi
-# config:      /etc/sysconfig/uwsgi
+# description: carbon-aggregator is a service that can run in front of carbon-cache,
+#              buffering and aggregating metrics before delivery
+# processname: carbon-aggregator.py
+# config:      /etc/sysconfig/carbon-aggregator
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -20,9 +19,9 @@
 
 exec="/usr/bin/carbon-aggregator.py"
 prog=$(basename "$exec")
-CARBON_CONFIG_PATH="/etc/graphite/carbon.conf"
+CARBON_CONFIG_PATH="/etc/carbon/carbon.conf"
 CARBON_AGGREGATOR_ARGS=""
-CARBON_AGGREGATOR_PIDFILE="/var/run/graphite/carbon-aggregator.pid"
+CARBON_AGGREGATOR_PIDFILE="/var/run/carbon/carbon-aggregator.pid"
 
 if [ -f /etc/sysconfig/carbon-aggregator ]; then
     . /etc/sysconfig/carbon-aggregator
@@ -56,7 +55,7 @@ stop() {
 
 case $1 in
     condrestart|try-restart)
-        rh_status "$f" 2>/dev/null && restart "$f"
+        rh_status 2>/dev/null && restart
         ;;
     reload|force-reload)
         restart

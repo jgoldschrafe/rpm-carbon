@@ -1,0 +1,12 @@
+/var/log/carbon/*/*.log {
+	missingok
+	notifempty
+	compress
+    create 640 graphite graphite
+    sharedscripts
+    postrotate
+        /sbin/service carbon-aggregator condrestart 2>/dev/null || :
+        /sbin/service carbon-cache condrestart 2>/dev/null || :
+        /sbin/service carbon-relay condrestart 2>/dev/null || :
+    endscript
+}
